@@ -1,0 +1,1229 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#16382B" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <title>Catálogo de Joyas</title>
+  <style>
+    :root {
+      --verde: #16382B;
+      --dorado: #C59B38;
+      --dorado-suave: #FBF6E8;
+      --fondo: #F5F5F2;
+      --blanco: #FFFFFF;
+      --texto: #1F2421;
+      --gris: #666E6A;
+      --borde: #E3E5E2;
+      --whatsapp: #25D366;
+    }
+
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      background: var(--fondo);
+      color: var(--texto);
+      padding-bottom: 96px;
+    }
+
+    /* Pantalla de clave */
+    .lock-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background: var(--verde);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .lock-screen.hidden { display: none; }
+
+    .lock-card {
+      background: var(--blanco);
+      width: 100%;
+      max-width: 360px;
+      border-radius: 20px;
+      padding: 28px 22px;
+      text-align: center;
+      box-shadow: 0 14px 36px rgba(0, 0, 0, 0.28);
+    }
+
+    .lock-icon {
+      width: 56px;
+      height: 56px;
+      margin: 0 auto 14px;
+      border-radius: 50%;
+      background: var(--dorado-suave);
+      color: #8A6510;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+    }
+
+    .lock-card h2 {
+      margin: 0 0 6px;
+      font-size: 21px;
+      color: var(--verde);
+    }
+
+    .lock-card p {
+      margin: 0 0 18px;
+      font-size: 14px;
+      color: var(--gris);
+    }
+
+    .lock-input {
+      width: 100%;
+      padding: 13px 14px;
+      border-radius: 12px;
+      border: 1.5px solid #D5DBD7;
+      font-size: 17px;
+      text-align: center;
+      outline: none;
+      margin-bottom: 12px;
+    }
+
+    .lock-input:focus { border-color: var(--verde); }
+
+    .lock-error {
+      color: #B42318;
+      font-size: 13px;
+      font-weight: 600;
+      min-height: 18px;
+      margin-bottom: 10px;
+    }
+
+    /* Encabezado fijo */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      background: var(--verde);
+      color: var(--blanco);
+      padding: 12px 14px 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.14);
+    }
+
+    .header-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .titulo {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .contador {
+      font-size: 12px;
+      color: #D7E3DD;
+      margin-top: 2px;
+    }
+
+    .header-btns {
+      display: flex;
+      gap: 6px;
+    }
+
+    .btn-header {
+      background: rgba(255, 255, 255, 0.14);
+      color: var(--blanco);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-radius: 10px;
+      padding: 8px 11px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    /* Buscador */
+    .search-box {
+      position: relative;
+      margin-bottom: 8px;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 11px 38px 11px 14px;
+      border-radius: 12px;
+      border: none;
+      font-size: 16px;
+      outline: none;
+      background: var(--blanco);
+      color: var(--texto);
+    }
+
+    .btn-clear-search {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: #E7EAE8;
+      color: #333;
+      border: none;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+      display: none;
+    }
+
+    /* Filtros */
+    .filtros {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .select-cat {
+      flex: 1;
+      min-width: 160px;
+      padding: 9px 10px;
+      border-radius: 10px;
+      border: none;
+      background: var(--blanco);
+      color: var(--texto);
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .estado-pills {
+      display: flex;
+      background: rgba(255, 255, 255, 0.14);
+      border-radius: 10px;
+      padding: 3px;
+      gap: 3px;
+    }
+
+    .pill {
+      border: none;
+      background: transparent;
+      color: #E4ECE8;
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .pill.active {
+      background: var(--dorado);
+      color: #1B1B1B;
+    }
+
+    /* Cuadrícula */
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 12px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    @media (min-width: 640px) {
+      .grid { grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    }
+
+    @media (min-width: 960px) {
+      .grid { grid-template-columns: repeat(4, 1fr); }
+    }
+
+    .card {
+      background: var(--blanco);
+      border-radius: 14px;
+      overflow: hidden;
+      border: 2px solid transparent;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card.selected {
+      border-color: var(--verde);
+      box-shadow: 0 0 0 2px rgba(22, 56, 43, 0.18);
+    }
+
+    .img-wrap {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      background: #EFEFEB;
+      cursor: pointer;
+      overflow: hidden;
+    }
+
+    .img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .btn-check {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: 2px solid var(--blanco);
+      background: rgba(0, 0, 0, 0.38);
+      color: var(--blanco);
+      font-size: 16px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 2;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+    }
+
+    .card.selected .btn-check {
+      background: var(--verde);
+      border-color: var(--blanco);
+    }
+
+    .badge-estado {
+      position: absolute;
+      bottom: 7px;
+      left: 7px;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 999px;
+    }
+
+    .estado-oro {
+      background: var(--dorado-suave);
+      color: #7D5C0B;
+      border: 1px solid #E5C878;
+    }
+
+    .estado-cera {
+      background: #EDF0F2;
+      color: #414B52;
+      border: 1px solid #CFD6DC;
+    }
+
+    .card-info {
+      padding: 9px 10px 10px;
+      cursor: pointer;
+    }
+
+    .card-ref {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--texto);
+      margin: 0 0 2px;
+      word-break: break-word;
+    }
+
+    .card-cat {
+      font-size: 12px;
+      color: var(--gris);
+      margin: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .load-more-wrap {
+      text-align: center;
+      margin: 18px 0 8px;
+    }
+
+    .btn-more {
+      background: var(--blanco);
+      color: var(--verde);
+      border: 1.5px solid var(--verde);
+      border-radius: 12px;
+      padding: 12px 24px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .estado-pantalla {
+      text-align: center;
+      padding: 48px 20px;
+      color: var(--gris);
+      font-size: 16px;
+    }
+
+    /* Barra flotante de selección */
+    .bar-seleccion {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 40;
+      background: var(--verde);
+      color: var(--blanco);
+      padding: 12px 14px;
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      box-shadow: 0 -4px 18px rgba(0, 0, 0, 0.22);
+    }
+
+    .bar-seleccion.visible { display: flex; }
+
+    .bar-count { font-size: 14px; font-weight: 700; }
+
+    .bar-actions {
+      display: flex;
+      gap: 7px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .btn-bar {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn-limpiar { background: rgba(255, 255, 255, 0.16); color: var(--blanco); }
+    .btn-collage { background: var(--dorado); color: #1B1B1B; }
+    .btn-enviar { background: var(--whatsapp); color: #092B15; }
+
+    /* Modales */
+    .modal-bg {
+      position: fixed;
+      inset: 0;
+      z-index: 60;
+      background: rgba(0, 0, 0, 0.72);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 14px;
+    }
+
+    .modal-bg.open { display: flex; }
+
+    .modal-card {
+      background: var(--blanco);
+      border-radius: 18px;
+      width: 100%;
+      max-width: 460px;
+      max-height: 92vh;
+      overflow-y: auto;
+      position: relative;
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.35);
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(0, 0, 0, 0.62);
+      color: var(--blanco);
+      font-size: 20px;
+      cursor: pointer;
+      z-index: 3;
+    }
+
+    .modal-img {
+      width: 100%;
+      max-height: 58vh;
+      object-fit: contain;
+      background: #111;
+      display: block;
+    }
+
+    .modal-body { padding: 16px; }
+    .modal-ref { margin: 0 0 6px; font-size: 22px; font-weight: 800; }
+
+    .modal-meta {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+      align-items: center;
+    }
+
+    .meta-cat {
+      background: #EEF1EF;
+      color: var(--texto);
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .modal-btns {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .btn-full {
+      border: none;
+      border-radius: 12px;
+      padding: 13px 14px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    .btn-primary { background: var(--verde); color: var(--blanco); }
+    .btn-wa { background: var(--whatsapp); color: #092B15; }
+    .btn-sec { background: #E9ECEA; color: var(--texto); }
+
+    .collage-preview {
+      width: 100%;
+      border-radius: 12px;
+      border: 1px solid var(--borde);
+      margin-bottom: 14px;
+      display: block;
+    }
+
+    .toast {
+      position: fixed;
+      top: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 120;
+      background: #1B1F1D;
+      color: var(--blanco);
+      padding: 10px 16px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+      display: none;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Pantalla de acceso con clave -->
+  <div id="pantallaClave" class="lock-screen">
+    <form class="lock-card" id="formClave">
+      <div class="lock-icon">🔒</div>
+      <h2>Acceso al Catálogo</h2>
+      <p>Ingresa la clave del taller. Solo te la pedirá una vez en este dispositivo.</p>
+      <input
+        id="inputClave"
+        class="lock-input"
+        type="password"
+        placeholder="Escribe la clave"
+        autocomplete="current-password"
+        required
+      />
+      <div id="lockError" class="lock-error"></div>
+      <button id="btnEntrar" class="btn-full btn-primary" type="submit">Entrar</button>
+    </form>
+  </div>
+
+  <header>
+    <div class="header-top">
+      <div>
+        <h1 class="titulo">Catálogo de Joyas</h1>
+        <div class="contador" id="contador">Cargando referencias...</div>
+      </div>
+      <div class="header-btns">
+        <button class="btn-header" id="btnRefresh" type="button">Actualizar</button>
+        <button class="btn-header" id="btnSalir" type="button" title="Bloquear">🔒</button>
+      </div>
+    </div>
+
+    <div class="search-box">
+      <input
+        type="search"
+        id="inputBuscar"
+        placeholder="Buscar referencia, tipo o detalle (ej. san benito, grueso)..."
+        autocomplete="off"
+      />
+      <button class="btn-clear-search" id="btnClearSearch" type="button" aria-label="Borrar búsqueda">×</button>
+    </div>
+
+    <div class="filtros">
+      <select class="select-cat" id="selectCat" aria-label="Filtrar por categoría">
+        <option value="">Todas las categorías</option>
+      </select>
+
+      <div class="estado-pills" role="group" aria-label="Filtrar por estado">
+        <button class="pill active" data-estado="" type="button">Todos</button>
+        <button class="pill" data-estado="en oro" type="button">En oro</button>
+        <button class="pill" data-estado="en cera" type="button">En cera</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div id="estadoPantalla" class="estado-pantalla">Cargando catálogo...</div>
+    <div id="grid" class="grid"></div>
+    <div id="loadMoreWrap" class="load-more-wrap" style="display:none;">
+      <button id="btnLoadMore" class="btn-more" type="button">Ver más joyas</button>
+    </div>
+  </main>
+
+  <!-- Barra inferior de selección -->
+  <div id="barSeleccion" class="bar-seleccion">
+    <div class="bar-count" id="barCount">0 seleccionadas</div>
+    <div class="bar-actions">
+      <button id="btnLimpiarSel" class="btn-bar btn-limpiar" type="button">Limpiar</button>
+      <button id="btnCollage" class="btn-bar btn-collage" type="button">Collage</button>
+      <button id="btnEnviarMulti" class="btn-bar btn-enviar" type="button">Enviar fotos</button>
+    </div>
+  </div>
+
+  <!-- Modal de detalle -->
+  <div id="modalDetalle" class="modal-bg">
+    <div class="modal-card">
+      <button class="modal-close" id="closeDetalle" type="button">×</button>
+      <img id="detalleImg" class="modal-img" src="" alt="Foto de joya" />
+      <div class="modal-body">
+        <h2 id="detalleRef" class="modal-ref"></h2>
+        <div class="modal-meta">
+          <span id="detalleCat" class="meta-cat"></span>
+          <span id="detalleEstado" class="badge-estado" style="position:static;"></span>
+        </div>
+        <div class="modal-btns">
+          <button id="btnToggleDetalle" class="btn-full btn-primary" type="button">Seleccionar</button>
+          <button id="btnEnviarUna" class="btn-full btn-wa" type="button">Enviar foto</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para compartir fotos o collage -->
+  <div id="modalShare" class="modal-bg">
+    <div class="modal-card">
+      <button class="modal-close" id="closeShare" type="button">×</button>
+      <div class="modal-body" id="shareBody"></div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <script>
+    // ===============================================================
+    // PEGA AQUÍ EL LINK DE TU WEB APP DE GOOGLE APPS SCRIPT
+    // ===============================================================
+    const API_URL = "https://script.google.com/macros/s/AKfycbw7e5lWMurCS7CmWqGg6tyaEeScLjLOwp_mTeZ99mJMg2wa67HitcESa1LpNTRcf5suJA/exec  ";
+
+    const MAX_SELECCION = 10;
+    const POR_PAGINA = 40;
+    const CACHE_KEY = "catalogo_joyas_cache_v1";
+    const PIN_KEY = "catalogo_joyas_pin_v1";
+
+    let pinActual = localStorage.getItem(PIN_KEY) || "";
+    let todos = [];
+    let filtrados = [];
+    let mostrados = POR_PAGINA;
+    let estadoFiltro = "";
+    let seleccion = new Map();
+    let itemActual = null;
+    let archivosListos = [];
+
+    const pantallaClave = document.getElementById("pantallaClave");
+    const formClave = document.getElementById("formClave");
+    const inputClave = document.getElementById("inputClave");
+    const lockError = document.getElementById("lockError");
+    const btnEntrar = document.getElementById("btnEntrar");
+
+    const grid = document.getElementById("grid");
+    const estadoPantalla = document.getElementById("estadoPantalla");
+    const contador = document.getElementById("contador");
+    const inputBuscar = document.getElementById("inputBuscar");
+    const btnClearSearch = document.getElementById("btnClearSearch");
+    const selectCat = document.getElementById("selectCat");
+    const loadMoreWrap = document.getElementById("loadMoreWrap");
+    const btnLoadMore = document.getElementById("btnLoadMore");
+    const barSeleccion = document.getElementById("barSeleccion");
+    const barCount = document.getElementById("barCount");
+    const modalDetalle = document.getElementById("modalDetalle");
+    const modalShare = document.getElementById("modalShare");
+    const shareBody = document.getElementById("shareBody");
+
+    function esc(texto) {
+      return (texto || "").toString()
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    function normalizar(texto) {
+      return (texto || "")
+        .toString()
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .trim();
+    }
+
+    function extraerDriveId(url) {
+      if (!url) return "";
+      const match = url.match(/\/d\/([^/?=]+)/);
+      return match ? match[1] : "";
+    }
+
+    function urlImagen(url, tam) {
+      if (!url) return "";
+      if (url.includes("lh3.googleusercontent.com/d/") && !url.includes("=")) {
+        return url + "=" + tam;
+      }
+      return url;
+    }
+
+    function mostrarToast(msg) {
+      const t = document.getElementById("toast");
+      t.textContent = msg;
+      t.style.display = "block";
+      clearTimeout(mostrarToast._timer);
+      mostrarToast._timer = setTimeout(() => { t.style.display = "none"; }, 2400);
+    }
+
+    function bloquearApp(mensajeError = "") {
+      pinActual = "";
+      todos = [];
+      filtrados = [];
+      seleccion.clear();
+      localStorage.removeItem(PIN_KEY);
+      localStorage.removeItem(CACHE_KEY);
+      grid.innerHTML = "";
+      actualizarEstilosSeleccion();
+      lockError.textContent = mensajeError;
+      inputClave.value = "";
+      pantallaClave.classList.remove("hidden");
+    }
+
+    function prepararItems(lista) {
+      return lista.map((it, idx) => ({
+        uid: idx,
+        r: it.r || "Sin ref",
+        c: it.c || "Otro",
+        t: it.t || "", // Invisible: solo se usa para la búsqueda interna
+        i: it.i || "",
+        e: it.e || "",
+        eNorm: normalizar(it.e),
+        busqueda: normalizar(`${it.r} ${it.c} ${it.t} ${it.e}`)
+      }));
+    }
+
+    function poblarCategorias() {
+      const conteo = new Map();
+      todos.forEach(it => conteo.set(it.c, (conteo.get(it.c) || 0) + 1));
+      const cats = Array.from(conteo.keys()).sort((a, b) => a.localeCompare(b, "es"));
+      const valorPrevio = selectCat.value;
+
+      selectCat.innerHTML = `<option value="">Todas las categorías (${todos.length})</option>`;
+      cats.forEach(cat => {
+        const opt = document.createElement("option");
+        opt.value = cat;
+        opt.textContent = `${cat} (${conteo.get(cat)})`;
+        selectCat.appendChild(opt);
+      });
+      if (valorPrevio && conteo.has(valorPrevio)) selectCat.value = valorPrevio;
+    }
+
+    function aplicarFiltros() {
+      const q = normalizar(inputBuscar.value);
+      const palabras = q ? q.split(/\s+/).filter(Boolean) : [];
+      const cat = selectCat.value;
+
+      btnClearSearch.style.display = inputBuscar.value ? "block" : "none";
+
+      filtrados = todos.filter(it => {
+        if (cat && it.c !== cat) return false;
+        if (estadoFiltro && it.eNorm !== estadoFiltro) return false;
+        if (palabras.length > 0) {
+          for (let i = 0; i < palabras.length; i++) {
+            if (!it.busqueda.includes(palabras[i])) return false;
+          }
+        }
+        return true;
+      });
+
+      mostrados = POR_PAGINA;
+      renderGrid();
+    }
+
+    function renderGrid() {
+      contador.textContent = `${filtrados.length} de ${todos.length} referencias`;
+      grid.innerHTML = "";
+
+      if (filtrados.length === 0) {
+        estadoPantalla.style.display = "block";
+        estadoPantalla.textContent = "No se encontraron joyas con esa búsqueda.";
+        loadMoreWrap.style.display = "none";
+        return;
+      }
+
+      estadoPantalla.style.display = "none";
+      const fragment = document.createDocumentFragment();
+      const limite = Math.min(mostrados, filtrados.length);
+
+      for (let i = 0; i < limite; i++) {
+        const it = filtrados[i];
+        const card = document.createElement("article");
+        card.className = "card" + (seleccion.has(it.uid) ? " selected" : "");
+        card.dataset.uid = it.uid;
+
+        const esCera = it.eNorm.includes("cera");
+        const claseEstado = esCera ? "estado-cera" : "estado-oro";
+
+        card.innerHTML = `
+          <div class="img-wrap">
+            <img src="${esc(urlImagen(it.i, "w450"))}" alt="Referencia ${esc(it.r)}" loading="lazy" />
+            <button class="btn-check" type="button" aria-label="Seleccionar referencia ${esc(it.r)}">
+              ${seleccion.has(it.uid) ? "✓" : ""}
+            </button>
+            ${it.e ? `<span class="badge-estado ${claseEstado}">${esc(it.e)}</span>` : ""}
+          </div>
+          <div class="card-info">
+            <p class="card-ref">${esc(it.r)}</p>
+            <p class="card-cat">${esc(it.c)}</p>
+          </div>
+        `;
+
+        card.querySelector(".btn-check").addEventListener("click", (ev) => {
+          ev.stopPropagation();
+          toggleSeleccion(it);
+        });
+
+        card.querySelector(".img-wrap").addEventListener("click", () => abrirDetalle(it));
+        card.querySelector(".card-info").addEventListener("click", () => abrirDetalle(it));
+
+        fragment.appendChild(card);
+      }
+
+      grid.appendChild(fragment);
+
+      if (limite < filtrados.length) {
+        loadMoreWrap.style.display = "block";
+        btnLoadMore.textContent = `Ver más (${filtrados.length - limite} restantes)`;
+      } else {
+        loadMoreWrap.style.display = "none";
+      }
+    }
+
+    function toggleSeleccion(it) {
+      if (seleccion.has(it.uid)) {
+        seleccion.delete(it.uid);
+      } else {
+        if (seleccion.size >= MAX_SELECCION) {
+          mostrarToast(`Máximo ${MAX_SELECCION} fotos por envío`);
+          return;
+        }
+        seleccion.set(it.uid, it);
+      }
+      actualizarEstilosSeleccion();
+    }
+
+    function actualizarEstilosSeleccion() {
+      document.querySelectorAll(".card").forEach(card => {
+        const uid = Number(card.dataset.uid);
+        const activa = seleccion.has(uid);
+        card.classList.toggle("selected", activa);
+        card.querySelector(".btn-check").textContent = activa ? "✓" : "";
+      });
+
+      if (seleccion.size > 0) {
+        barSeleccion.classList.add("visible");
+        barCount.textContent = seleccion.size === 1
+          ? "1 foto lista"
+          : `${seleccion.size} fotos listas`;
+      } else {
+        barSeleccion.classList.remove("visible");
+      }
+
+      if (itemActual) {
+        document.getElementById("btnToggleDetalle").textContent =
+          seleccion.has(itemActual.uid) ? "Quitar selección" : "Seleccionar";
+      }
+    }
+
+    function abrirDetalle(it) {
+      itemActual = it;
+      document.getElementById("detalleImg").src = urlImagen(it.i, "s1200");
+      document.getElementById("detalleRef").textContent = `Ref. ${it.r}`;
+      document.getElementById("detalleCat").textContent = it.c;
+
+      const est = document.getElementById("detalleEstado");
+      est.textContent = it.e || "";
+      est.style.display = it.e ? "inline-block" : "none";
+      est.className = "badge-estado " + (it.eNorm.includes("cera") ? "estado-cera" : "estado-oro");
+
+      document.getElementById("btnToggleDetalle").textContent =
+        seleccion.has(it.uid) ? "Quitar selección" : "Seleccionar";
+
+      modalDetalle.classList.add("open");
+    }
+
+    function base64AFile(b64, mime, nombre) {
+      const bin = atob(b64);
+      const arr = new Uint8Array(bin.length);
+      for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+      return new File([arr], nombre, { type: mime || "image/jpeg" });
+    }
+
+    async function pedirFotosReales(items) {
+      const ids = items.map(it => extraerDriveId(it.i)).filter(Boolean);
+      if (ids.length === 0) throw new Error("Estas joyas no tienen un enlace de imagen válido.");
+
+      const url = `${API_URL}?pin=${encodeURIComponent(pinActual)}&action=imgs&ids=${encodeURIComponent(ids.join(","))}`;
+      const res = await fetch(url);
+      const data = await res.json();
+      if (data.authError) {
+        cerrarShare();
+        bloquearApp("La clave cambió. Ingresa la nueva clave.");
+        throw new Error("Sesión bloqueada.");
+      }
+      if (!data.ok || !data.images) throw new Error("No se pudieron descargar las imágenes.");
+
+      return data.images.map((img, idx) => ({
+        item: items[idx],
+        ok: img.ok,
+        mime: img.mime || "image/jpeg",
+        b64: img.b64
+      })).filter(x => x.ok && x.b64);
+    }
+
+    async function prepararEnvio(items, modoCollage) {
+      modalDetalle.classList.remove("open");
+      modalShare.classList.add("open");
+      archivosListos = [];
+
+      shareBody.innerHTML = `
+        <div style="text-align:center; padding: 28px 10px;">
+          <h3 style="margin:0 0 8px;">Preparando ${items.length === 1 ? "la foto" : items.length + " fotos"}...</h3>
+          <p style="margin:0; color:#666; font-size:14px;">Un momento mientras se alistan en alta calidad.</p>
+        </div>
+      `;
+
+      try {
+        const descargadas = await pedirFotosReales(items);
+        if (descargadas.length === 0) throw new Error("No se pudo cargar ninguna imagen.");
+
+        if (modoCollage && descargadas.length > 1) {
+          const { file, previewUrl } = await construirCollage(descargadas);
+          archivosListos = [file];
+          renderModalListo(
+            `Collage listo (${descargadas.length} joyas)`,
+            previewUrl,
+            "Compartir collage en WhatsApp"
+          );
+        } else {
+          archivosListos = descargadas.map(d => {
+            const refLimpia = d.item.r.replace(/[^a-zA-Z0-9_-]/g, "_");
+            return base64AFile(d.b64, d.mime, `Ref_${refLimpia}.jpg`);
+          });
+          const textoTitulo = archivosListos.length === 1
+            ? `Ref. ${descargadas[0].item.r} lista para enviar`
+            : `${archivosListos.length} fotos listas para WhatsApp`;
+          renderModalListo(textoTitulo, null, "Abrir WhatsApp / Compartir");
+        }
+      } catch (err) {
+        if (!pinActual) return;
+        shareBody.innerHTML = `
+          <div style="text-align:center; padding: 20px 10px;">
+            <h3 style="margin:0 0 8px; color:#A61C1C;">No se pudieron preparar las fotos</h3>
+            <p style="margin:0 0 16px; color:#555; font-size:14px;">${esc(err.message)}</p>
+            <button class="btn-full btn-sec" onclick="cerrarShare()">Cerrar</button>
+          </div>
+        `;
+      }
+    }
+
+    function renderModalListo(titulo, previewUrl, textoBoton) {
+      const puedeCompartir = !!(navigator.canShare && navigator.canShare({ files: archivosListos }));
+
+      shareBody.innerHTML = `
+        <h3 style="margin:0 0 12px; font-size:19px;">${esc(titulo)}</h3>
+        ${previewUrl ? `<img class="collage-preview" src="${previewUrl}" alt="Vista previa del collage" />` : `
+          <p style="margin:0 0 16px; color:#555; font-size:14px;">
+            Toca el botón verde y elige <strong>WhatsApp</strong> para enviar las imágenes reales al cliente.
+          </p>
+        `}
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          ${puedeCompartir ? `<button id="btnDispararShare" class="btn-full btn-wa" type="button">${esc(textoBoton)}</button>` : ""}
+          <button id="btnDescargarFallback" class="btn-full btn-sec" type="button">
+            ${archivosListos.length === 1 ? "Guardar imagen en el dispositivo" : "Guardar fotos en el dispositivo"}
+          </button>
+        </div>
+      `;
+
+      const btnShare = document.getElementById("btnDispararShare");
+      if (btnShare) {
+        btnShare.addEventListener("click", async () => {
+          try {
+            await navigator.share({ files: archivosListos });
+            cerrarShare();
+          } catch (e) {
+            if (e.name !== "AbortError") {
+              mostrarToast("Usa el botón Guardar para adjuntarlas desde galería.");
+            }
+          }
+        });
+      }
+
+      document.getElementById("btnDescargarFallback").addEventListener("click", () => {
+        archivosListos.forEach((file, idx) => {
+          setTimeout(() => {
+            const url = URL.createObjectURL(file);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = file.name;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            setTimeout(() => URL.revokeObjectURL(url), 1500);
+          }, idx * 250);
+        });
+        mostrarToast("Guardando imágenes...");
+      });
+    }
+
+    function cargarImagenHtml(src) {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => resolve(img);
+        img.onerror = reject;
+        img.src = src;
+      });
+    }
+
+    async function construirCollage(descargadas) {
+      const n = descargadas.length;
+      const cols = n <= 4 ? 2 : 3;
+      const rows = Math.ceil(n / cols);
+      const tile = 520;
+      const labelH = 66;
+      const gap = 22;
+      const pad = 28;
+
+      const canvas = document.createElement("canvas");
+      canvas.width = pad * 2 + cols * tile + (cols - 1) * gap;
+      canvas.height = pad * 2 + rows * (tile + labelH) + (rows - 1) * gap;
+
+      const ctx = canvas.getContext("2d");
+      ctx.fillStyle = "#FFFFFF";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      for (let i = 0; i < n; i++) {
+        const d = descargadas[i];
+        const col = i % cols;
+        const row = Math.floor(i / cols);
+        const x = pad + col * (tile + gap);
+        const y = pad + row * (tile + labelH + gap);
+
+        ctx.fillStyle = "#F6F6F3";
+        ctx.fillRect(x, y, tile, tile);
+
+        const img = await cargarImagenHtml(`data:${d.mime};base64,${d.b64}`);
+        const escala = Math.min(tile / img.width, tile / img.height);
+        const w = img.width * escala;
+        const h = img.height * escala;
+        ctx.drawImage(img, x + (tile - w) / 2, y + (tile - h) / 2, w, h);
+
+        ctx.strokeStyle = "#E2E4E0";
+        ctx.lineWidth = 2;
+        ctx.strokeRect(x, y, tile, tile + labelH);
+
+        ctx.fillStyle = "#16382B";
+        ctx.font = "bold 34px Arial, sans-serif";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(`Ref. ${d.item.r}`, x + tile / 2, y + tile + labelH / 2);
+      }
+
+      const blob = await new Promise(res => canvas.toBlob(res, "image/jpeg", 0.92));
+      const file = new File([blob], "Catalogo_Referencias.jpg", { type: "image/jpeg" });
+      const previewUrl = URL.createObjectURL(blob);
+      return { file, previewUrl };
+    }
+
+    function cerrarShare() {
+      modalShare.classList.remove("open");
+    }
+
+    async function cargarCatalogo(forzar = false, desdeLogin = false) {
+      if (!API_URL || API_URL.includes("PEGA_AQUI")) {
+        lockError.textContent = "Falta pegar el link de Apps Script en index.html.";
+        return false;
+      }
+
+      if (!pinActual) {
+        pantallaClave.classList.remove("hidden");
+        return false;
+      }
+
+      if (!forzar && !desdeLogin) {
+        const cache = localStorage.getItem(CACHE_KEY);
+        if (cache) {
+          try {
+            const parsed = JSON.parse(cache);
+            if (Array.isArray(parsed) && parsed.length > 0) {
+              todos = prepararItems(parsed);
+              pantallaClave.classList.add("hidden");
+              poblarCategorias();
+              aplicarFiltros();
+            }
+          } catch (_) {}
+        }
+      } else if (forzar) {
+        contador.textContent = "Actualizando catálogo...";
+      }
+
+      try {
+        const res = await fetch(`${API_URL}?pin=${encodeURIComponent(pinActual)}`);
+        const data = await res.json();
+
+        if (data.authError) {
+          bloquearApp("Clave incorrecta. Intenta de nuevo.");
+          return false;
+        }
+
+        if (!data.ok || !Array.isArray(data.items)) {
+          throw new Error("Respuesta inválida del catálogo.");
+        }
+
+        localStorage.setItem(PIN_KEY, pinActual);
+        todos = prepararItems(data.items);
+        try { localStorage.setItem(CACHE_KEY, JSON.stringify(data.items)); } catch (_) {}
+
+        pantallaClave.classList.add("hidden");
+        poblarCategorias();
+        aplicarFiltros();
+        if (forzar) mostrarToast(`Actualizado: ${todos.length} referencias`);
+        return true;
+      } catch (err) {
+        if (desdeLogin) {
+          lockError.textContent = "Error de conexión. Revisa el internet o el link de Apps Script.";
+          return false;
+        }
+        if (todos.length === 0) {
+          estadoPantalla.textContent = "Error al conectar con el catálogo. Intenta darle a Actualizar.";
+        }
+        return false;
+      }
+    }
+
+    // Acceso con clave
+    formClave.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const clave = inputClave.value.trim();
+      if (!clave) return;
+
+      lockError.textContent = "";
+      btnEntrar.disabled = true;
+      btnEntrar.textContent = "Verificando...";
+      pinActual = clave;
+
+      await cargarCatalogo(false, true);
+
+      btnEntrar.disabled = false;
+      btnEntrar.textContent = "Entrar";
+    });
+
+    document.getElementById("btnSalir").addEventListener("click", () => {
+      if (confirm("¿Quieres bloquear la app y pedir la clave de nuevo?")) {
+        bloquearApp("");
+      }
+    });
+
+    // Eventos del catálogo
+    let timerBusqueda;
+    inputBuscar.addEventListener("input", () => {
+      clearTimeout(timerBusqueda);
+      timerBusqueda = setTimeout(aplicarFiltros, 180);
+    });
+
+    btnClearSearch.addEventListener("click", () => {
+      inputBuscar.value = "";
+      aplicarFiltros();
+      inputBuscar.focus();
+    });
+
+    selectCat.addEventListener("change", aplicarFiltros);
+
+    document.querySelectorAll(".pill").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".pill").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        estadoFiltro = btn.dataset.estado;
+        aplicarFiltros();
+      });
+    });
+
+    btnLoadMore.addEventListener("click", () => {
+      mostrados += POR_PAGINA;
+      renderGrid();
+    });
+
+    document.getElementById("btnRefresh").addEventListener("click", () => cargarCatalogo(true));
+
+    document.getElementById("btnLimpiarSel").addEventListener("click", () => {
+      seleccion.clear();
+      actualizarEstilosSeleccion();
+    });
+
+    document.getElementById("btnEnviarMulti").addEventListener("click", () => {
+      prepararEnvio(Array.from(seleccion.values()), false);
+    });
+
+    document.getElementById("btnCollage").addEventListener("click", () => {
+      const items = Array.from(seleccion.values());
+      prepararEnvio(items, items.length > 1);
+    });
+
+    document.getElementById("closeDetalle").addEventListener("click", () => modalDetalle.classList.remove("open"));
+    modalDetalle.addEventListener("click", (e) => {
+      if (e.target === modalDetalle) modalDetalle.classList.remove("open");
+    });
+
+    document.getElementById("btnToggleDetalle").addEventListener("click", () => {
+      if (itemActual) toggleSeleccion(itemActual);
+    });
+
+    document.getElementById("btnEnviarUna").addEventListener("click", () => {
+      if (itemActual) prepararEnvio([itemActual], false);
+    });
+
+    document.getElementById("closeShare").addEventListener("click", cerrarShare);
+    modalShare.addEventListener("click", (e) => {
+      if (e.target === modalShare) cerrarShare();
+    });
+
+    // Arranque
+    if (pinActual) {
+      cargarCatalogo(false, false);
+    } else {
+      pantallaClave.classList.remove("hidden");
+    }
+  </script>
+</body>
+</html>
