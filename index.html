@@ -134,6 +134,7 @@
     .header-btns {
       display: flex;
       gap: 6px;
+      align-items: center;
     }
 
     .btn-header {
@@ -141,10 +142,25 @@
       color: var(--blanco);
       border: 1px solid rgba(255, 255, 255, 0.22);
       border-radius: 10px;
-      padding: 8px 11px;
+      padding: 8px 10px;
       font-size: 13px;
       font-weight: 600;
       cursor: pointer;
+    }
+
+    .btn-lens-top {
+      background: var(--dorado);
+      color: #1B1B1B;
+      border: none;
+      border-radius: 10px;
+      padding: 8px 12px;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap;
     }
 
     /* Buscador */
@@ -376,7 +392,7 @@
       left: 0;
       right: 0;
       bottom: 0;
-      z-index: 40;
+      z-index: 60;
       background: var(--verde);
       color: var(--blanco);
       padding: 12px 14px;
@@ -415,7 +431,6 @@
     .modal-bg {
       position: fixed;
       inset: 0;
-      z-index: 60;
       background: rgba(0, 0, 0, 0.72);
       display: none;
       align-items: center;
@@ -425,15 +440,26 @@
 
     .modal-bg.open { display: flex; }
 
+    #modalVisual { z-index: 55; align-items: flex-start; overflow-y: auto; padding: 12px 12px 96px; }
+    #modalDetalle { z-index: 65; }
+    #modalShare { z-index: 75; }
+
     .modal-card {
       background: var(--blanco);
       border-radius: 18px;
       width: 100%;
-      max-width: 460px;
+      max-width: 480px;
       max-height: 92vh;
       overflow-y: auto;
       position: relative;
       box-shadow: 0 12px 35px rgba(0, 0, 0, 0.35);
+    }
+
+    #modalVisual .modal-card {
+      max-width: 560px;
+      max-height: none;
+      overflow: visible;
+      margin: auto 0;
     }
 
     .modal-close {
@@ -496,8 +522,172 @@
     }
 
     .btn-primary { background: var(--verde); color: var(--blanco); }
+    .btn-dorado { background: var(--dorado); color: #1B1B1B; }
     .btn-wa { background: var(--whatsapp); color: #092B15; }
     .btn-sec { background: #E9ECEA; color: var(--texto); }
+
+    /* Buscador visual */
+    .visual-header {
+      background: var(--verde);
+      color: var(--blanco);
+      padding: 16px 48px 14px 16px;
+      border-radius: 18px 18px 0 0;
+    }
+
+    .visual-header h2 { margin: 0 0 4px; font-size: 19px; }
+    .visual-header p { margin: 0; font-size: 13px; color: #D7E3DD; }
+
+    .visual-btns {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .visual-preview-box {
+      display: none;
+      align-items: center;
+      gap: 12px;
+      background: #F6F7F5;
+      border: 1px solid var(--borde);
+      border-radius: 12px;
+      padding: 10px;
+      margin-bottom: 14px;
+    }
+
+    .visual-preview-box.visible { display: flex; }
+
+    .visual-preview-img {
+      width: 72px;
+      height: 72px;
+      border-radius: 10px;
+      object-fit: cover;
+      background: #DDD;
+      flex-shrink: 0;
+    }
+
+    .visual-status {
+      font-size: 13px;
+      color: var(--texto);
+      line-height: 1.35;
+    }
+
+    .visual-loader {
+      display: none;
+      text-align: center;
+      padding: 20px 10px;
+      color: var(--verde);
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .visual-loader.visible { display: block; }
+
+    .spinner {
+      width: 34px;
+      height: 34px;
+      border: 4px solid #DCE3DF;
+      border-top-color: var(--verde);
+      border-radius: 50%;
+      margin: 0 auto 10px;
+      animation: girar 0.8s linear infinite;
+    }
+
+    @keyframes girar { to { transform: rotate(360deg); } }
+
+    .visual-results {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .visual-item {
+      display: flex;
+      gap: 11px;
+      background: #FAFBF9;
+      border: 1.5px solid var(--borde);
+      border-radius: 14px;
+      padding: 9px;
+      align-items: center;
+    }
+
+    .visual-item.selected {
+      border-color: var(--verde);
+      background: #F1F6F3;
+    }
+
+    .visual-item img {
+      width: 88px;
+      height: 88px;
+      border-radius: 10px;
+      object-fit: cover;
+      background: #EAEAE6;
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+
+    .visual-item-info { flex: 1; min-width: 0; }
+
+    .visual-item-top {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 3px;
+    }
+
+    .visual-rank {
+      background: var(--verde);
+      color: var(--blanco);
+      font-size: 11px;
+      font-weight: 800;
+      padding: 2px 7px;
+      border-radius: 999px;
+    }
+
+    .visual-parecido {
+      background: var(--dorado-suave);
+      color: #7D5C0B;
+      border: 1px solid #E5C878;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 999px;
+    }
+
+    .visual-item-ref {
+      margin: 0;
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--texto);
+    }
+
+    .visual-item-cat {
+      margin: 2px 0 4px;
+      font-size: 12px;
+      color: var(--gris);
+    }
+
+    .visual-item-motivo {
+      margin: 0 0 8px;
+      font-size: 12px;
+      color: #36403B;
+      line-height: 1.3;
+    }
+
+    .visual-item-actions {
+      display: flex;
+      gap: 6px;
+    }
+
+    .btn-mini {
+      border: none;
+      border-radius: 8px;
+      padding: 7px 10px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
 
     .collage-preview {
       width: 100%;
@@ -552,7 +742,8 @@
         <div class="contador" id="contador">Cargando referencias...</div>
       </div>
       <div class="header-btns">
-        <button class="btn-header" id="btnRefresh" type="button">Actualizar</button>
+        <button class="btn-lens-top" id="btnAbrirVisual" type="button">📷 Buscar foto</button>
+        <button class="btn-header" id="btnRefresh" type="button" title="Actualizar catálogo">↻</button>
         <button class="btn-header" id="btnSalir" type="button" title="Bloquear">🔒</button>
       </div>
     </div>
@@ -595,6 +786,39 @@
       <button id="btnLimpiarSel" class="btn-bar btn-limpiar" type="button">Limpiar</button>
       <button id="btnCollage" class="btn-bar btn-collage" type="button">Collage</button>
       <button id="btnEnviarMulti" class="btn-bar btn-enviar" type="button">Enviar fotos</button>
+    </div>
+  </div>
+
+  <!-- Modal Buscador Visual (Google Lens) -->
+  <div id="modalVisual" class="modal-bg">
+    <div class="modal-card">
+      <button class="modal-close" id="closeVisual" type="button">×</button>
+      <div class="visual-header">
+        <h2>Buscador por Foto</h2>
+        <p>Toma una foto o sube una de WhatsApp. Compara diseño aunque esté en oro o cera (no ocupa espacio en Drive).</p>
+      </div>
+      <div class="modal-body">
+        <input id="inputCamara" type="file" accept="image/*" capture="environment" style="display:none;" />
+        <input id="inputGaleria" type="file" accept="image/*" style="display:none;" />
+
+        <div class="visual-btns">
+          <button id="btnTomarFoto" class="btn-full btn-primary" type="button">📸 Tomar foto</button>
+          <button id="btnElegirFoto" class="btn-full btn-dorado" type="button">🖼️ Subir foto</button>
+        </div>
+
+        <div id="visualPreviewBox" class="visual-preview-box">
+          <img id="visualPreviewImg" class="visual-preview-img" src="" alt="Foto buscada" />
+          <div id="visualStatus" class="visual-status"></div>
+        </div>
+
+        <div id="visualLoader" class="visual-loader">
+          <div class="spinner"></div>
+          <div>Analizando diseño y comparando con el catálogo...</div>
+          <div style="font-size:12px; font-weight:500; color:#666; margin-top:4px;">Esto tarda unos 10 a 15 segundos</div>
+        </div>
+
+        <div id="visualResults" class="visual-results"></div>
+      </div>
     </div>
   </div>
 
@@ -646,6 +870,7 @@
     let seleccion = new Map();
     let itemActual = null;
     let archivosListos = [];
+    let resultadosVisualesActuales = [];
 
     const pantallaClave = document.getElementById("pantallaClave");
     const formClave = document.getElementById("formClave");
@@ -663,9 +888,18 @@
     const btnLoadMore = document.getElementById("btnLoadMore");
     const barSeleccion = document.getElementById("barSeleccion");
     const barCount = document.getElementById("barCount");
+    const modalVisual = document.getElementById("modalVisual");
     const modalDetalle = document.getElementById("modalDetalle");
     const modalShare = document.getElementById("modalShare");
     const shareBody = document.getElementById("shareBody");
+
+    const inputCamara = document.getElementById("inputCamara");
+    const inputGaleria = document.getElementById("inputGaleria");
+    const visualPreviewBox = document.getElementById("visualPreviewBox");
+    const visualPreviewImg = document.getElementById("visualPreviewImg");
+    const visualStatus = document.getElementById("visualStatus");
+    const visualLoader = document.getElementById("visualLoader");
+    const visualResults = document.getElementById("visualResults");
 
     function esc(texto) {
       return (texto || "").toString()
@@ -714,6 +948,9 @@
       localStorage.removeItem(PIN_KEY);
       localStorage.removeItem(CACHE_KEY);
       grid.innerHTML = "";
+      modalVisual.classList.remove("open");
+      modalDetalle.classList.remove("open");
+      modalShare.classList.remove("open");
       actualizarEstilosSeleccion();
       lockError.textContent = mensajeError;
       inputClave.value = "";
@@ -725,7 +962,7 @@
         uid: idx,
         r: it.r || "Sin ref",
         c: it.c || "Otro",
-        t: it.t || "", // Invisible: solo se usa para la búsqueda interna
+        t: it.t || "", // Invisible: solo se usa para búsqueda interna
         i: it.i || "",
         e: it.e || "",
         eNorm: normalizar(it.e),
@@ -851,6 +1088,14 @@
         card.querySelector(".btn-check").textContent = activa ? "✓" : "";
       });
 
+      document.querySelectorAll(".visual-item").forEach(el => {
+        const uid = el.dataset.uid;
+        const activa = seleccion.has(isNaN(Number(uid)) ? uid : Number(uid));
+        el.classList.toggle("selected", activa);
+        const btn = el.querySelector(".btn-vis-sel");
+        if (btn) btn.textContent = activa ? "✓ Seleccionada" : "Seleccionar";
+      });
+
       if (seleccion.size > 0) {
         barSeleccion.classList.add("visible");
         barCount.textContent = seleccion.size === 1
@@ -883,6 +1128,152 @@
       modalDetalle.classList.add("open");
     }
 
+    // ===============================================================
+    // BUSCADOR VISUAL (TIPO GOOGLE LENS)
+    // ===============================================================
+    function comprimirFotoEnMemoria(file) {
+      return new Promise((resolve, reject) => {
+        const url = URL.createObjectURL(file);
+        const img = new Image();
+        img.onload = () => {
+          URL.revokeObjectURL(url);
+          const maxLado = 900;
+          let w = img.width;
+          let h = img.height;
+          if (w > maxLado || h > maxLado) {
+            if (w >= h) {
+              h = Math.round((h * maxLado) / w);
+              w = maxLado;
+            } else {
+              w = Math.round((w * maxLado) / h);
+              h = maxLado;
+            }
+          }
+          const canvas = document.createElement("canvas");
+          canvas.width = w;
+          canvas.height = h;
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0, w, h);
+          const dataUrl = canvas.toDataURL("image/jpeg", 0.82);
+          resolve(dataUrl);
+        };
+        img.onerror = () => {
+          URL.revokeObjectURL(url);
+          reject(new Error("No se pudo leer la imagen seleccionada."));
+        };
+        img.src = url;
+      });
+    }
+
+    async function procesarFotoBusqueda(file) {
+      if (!file) return;
+
+      visualResults.innerHTML = "";
+      visualPreviewBox.classList.add("visible");
+      visualLoader.classList.add("visible");
+      visualStatus.innerHTML = "<strong>Preparando foto...</strong>";
+
+      try {
+        const dataUrl = await comprimirFotoEnMemoria(file);
+        visualPreviewImg.src = dataUrl;
+        visualStatus.innerHTML = "<strong>Buscando coincidencias...</strong><br>Comparando forma y diseño en el catálogo.";
+
+        const res = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({
+            pin: pinActual,
+            action: "buscarVisual",
+            imageBase64: dataUrl,
+            mimeType: "image/jpeg"
+          })
+        });
+
+        const data = await res.json();
+        visualLoader.classList.remove("visible");
+
+        if (data.authError) {
+          bloquearApp("La clave cambió. Ingresa la nueva clave.");
+          return;
+        }
+
+        if (!data.ok) {
+          visualStatus.innerHTML = `<span style="color:#B42318; font-weight:700;">Error:</span> ${esc(data.error || "No se pudo completar la búsqueda.")}`;
+          return;
+        }
+
+        const desc = data.descripcion ? `<strong>Detectado:</strong> ${esc(data.descripcion)}` : "<strong>Búsqueda completada</strong>";
+        visualStatus.innerHTML = desc;
+
+        const lista = Array.isArray(data.resultados) ? data.resultados : [];
+        if (lista.length === 0) {
+          visualResults.innerHTML = `<div style="text-align:center; padding:20px; color:#666;">No encontramos un diseño parecido en el catálogo.</div>`;
+          return;
+        }
+
+        renderResultadosVisuales(lista);
+      } catch (err) {
+        visualLoader.classList.remove("visible");
+        visualStatus.innerHTML = `<span style="color:#B42318; font-weight:700;">Error de conexión:</span> ${esc(err.message)}`;
+      }
+    }
+
+    function obtenerItemCatalogo(resItem, idx) {
+      const encontrado = todos.find(x => x.r === resItem.r);
+      if (encontrado) return encontrado;
+      return {
+        uid: "vis_" + idx + "_" + resItem.r,
+        r: resItem.r || "Sin ref",
+        c: resItem.c || "Otro",
+        t: "",
+        i: resItem.i || "",
+        e: resItem.e || "",
+        eNorm: normalizar(resItem.e || "")
+      };
+    }
+
+    function renderResultadosVisuales(lista) {
+      visualResults.innerHTML = "";
+      resultadosVisualesActuales = lista;
+
+      lista.forEach((r, idx) => {
+        const item = obtenerItemCatalogo(r, idx);
+        const activa = seleccion.has(item.uid);
+        const esCera = item.eNorm.includes("cera");
+
+        const card = document.createElement("div");
+        card.className = "visual-item" + (activa ? " selected" : "");
+        card.dataset.uid = item.uid;
+
+        card.innerHTML = `
+          <img src="${esc(urlImagen(item.i, "w450"))}" alt="Ref ${esc(item.r)}" />
+          <div class="visual-item-info">
+            <div class="visual-item-top">
+              <span class="visual-rank">#${idx + 1}</span>
+              ${r.parecido ? `<span class="visual-parecido">${esc(r.parecido)}</span>` : ""}
+              ${item.e ? `<span class="badge-estado ${esCera ? "estado-cera" : "estado-oro"}" style="position:static;">${esc(item.e)}</span>` : ""}
+            </div>
+            <p class="visual-item-ref">Ref. ${esc(item.r)}</p>
+            <p class="visual-item-cat">${esc(item.c)}</p>
+            ${r.motivo ? `<p class="visual-item-motivo">${esc(r.motivo)}</p>` : ""}
+            <div class="visual-item-actions">
+              <button class="btn-mini btn-primary btn-vis-sel" type="button">${activa ? "✓ Seleccionada" : "Seleccionar"}</button>
+              <button class="btn-mini btn-wa btn-vis-wa" type="button">Enviar</button>
+            </div>
+          </div>
+        `;
+
+        card.querySelector("img").addEventListener("click", () => abrirDetalle(item));
+        card.querySelector(".btn-vis-sel").addEventListener("click", () => toggleSeleccion(item));
+        card.querySelector(".btn-vis-wa").addEventListener("click", () => prepararEnvio([item], false));
+
+        visualResults.appendChild(card);
+      });
+    }
+
+    // ===============================================================
+    // ENVÍO DE FOTOS REALES Y COLLAGE A WHATSAPP
+    // ===============================================================
     function base64AFile(b64, mime, nombre) {
       const bin = atob(b64);
       const arr = new Uint8Array(bin.length);
@@ -1153,6 +1544,37 @@
       if (confirm("¿Quieres bloquear la app y pedir la clave de nuevo?")) {
         bloquearApp("");
       }
+    });
+
+    // Eventos del buscador visual
+    document.getElementById("btnAbrirVisual").addEventListener("click", () => {
+      modalVisual.classList.add("open");
+    });
+
+    document.getElementById("closeVisual").addEventListener("click", () => {
+      modalVisual.classList.remove("open");
+    });
+
+    modalVisual.addEventListener("click", (e) => {
+      if (e.target === modalVisual) modalVisual.classList.remove("open");
+    });
+
+    document.getElementById("btnTomarFoto").addEventListener("click", () => {
+      inputCamara.value = "";
+      inputCamara.click();
+    });
+
+    document.getElementById("btnElegirFoto").addEventListener("click", () => {
+      inputGaleria.value = "";
+      inputGaleria.click();
+    });
+
+    inputCamara.addEventListener("change", (e) => {
+      if (e.target.files && e.target.files[0]) procesarFotoBusqueda(e.target.files[0]);
+    });
+
+    inputGaleria.addEventListener("change", (e) => {
+      if (e.target.files && e.target.files[0]) procesarFotoBusqueda(e.target.files[0]);
     });
 
     // Eventos del catálogo
